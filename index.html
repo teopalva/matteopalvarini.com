@@ -1,15 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
 
-<head>
-    <meta charset="UTF-8">
-    <title>Matteo Palvarini</title>
-    <link rel="stylesheet" href="css/main.css" type="text/css" media="all">
-    <link rel="stylesheet" href="css/ionicons.min.css" type="text/css" media="all">
-    <link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
-</head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1040">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="keywords" content="matteo,palvarini,personal,website,computer,science,visualization,product">
+<meta itemprop="description" name="description" content="Matteo Palvarini's personal website.">
+<link rel="image_src" href="">
 
-<body>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Matteo Palvarini"/>
+<meta property="og:description" content="Matteo Palvarini's personal website.">
+<meta property="og:url" content="http://matteopalvarini.com/"/>
+<meta property="og:image" content=""/>
+
+<!-- Twitter -->
+<meta name="twitter:card" value="summary_large_image">
+<meta name="twitter:site" value="@teopalva">
+<meta name="twitter:creator" content="@teopalva">
+<meta name="twitter:title" content="Matteo Palvarini">
+<meta name="twitter:description" content="Matteo Palvarini's personal website.">
+<meta name="twitter:url" content="http://matteopalvarini.com/">
+<meta name="twitter:image" content="">
+<meta name="twitter:image:width" content="560">
+<meta name="twitter:image:height" content="295">
+
+<meta name="author" content="Matteo Palvarini">
+<link rel="canonical" href="http://matteopalvarini.com/">
+<title>Matteo Palvarini</title>
+
+<link rel="stylesheet" href="css/main.css" type="text/css" media="all">
+<link rel="stylesheet" href="css/ionicons.min.css" type="text/css" media="all">
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:200,300,400,600,700,900' rel='stylesheet' type='text/css'>
 
 <section class="banner">
     <div> I am currently working on this website. In the meantime, please refer to my LinkedIn profile or send me an email. You can also play with one of my data visualization apps about Chicago. </div>
@@ -27,14 +49,14 @@
     <a href="mailto:matteo.palvarini@gmail.com"> <i class="icon ion-email"></i> </a>
 </section>
 
-<section class="frame-section">
+<!--div id="cells">
+    <div id="cells-deep"></div>
+</div>
 
-    <iframe id="frame-app" src="http://chicagosafetravel.bitbucket.org/webapp/">
-    </iframe>
-
-</section>
-
-</body>
+<script src='./js/d3.min.js'></script>
+<script src='./js/hexbin.js'></script>
+<script src='./js/seedrandom.min.js'></script>
+<!--script src='./js/projects.js'></script-->
 
 <script>
     (function (i, s, o, g, r, a, m) {
@@ -52,12 +74,3 @@
     ga('create', 'UA-57874149-1', 'auto');
     ga('send', 'pageview');
 </script>
-
-<script>
-    var init = function init() {
-        var iframe = document.getElementById("frame-app");
-        iframe.setAttribute("height", "" + window.innerWidth * (1/3.746));
-    }();
-</script>
-
-</html>
