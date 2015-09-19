@@ -27,14 +27,15 @@
 
         var interpolate = function(currPos, B, steps, time) {
             var unit = [B[0] / steps, B[1] / steps];
-            for(var i=1; i<=steps; i++) {
+            for(var i=0; i<steps; i++) {
                 (function(x, y) {
                     var action = function() {
                         context.lineTo(x, y);
                         context.stroke();
+                        return true;
                     };
-                    setTimeout(action, (time / steps) * i);
-                })(currPos[0] + unit[0] * i, currPos[1] + unit[1] * i);
+                    d3.timer(action, (time / steps) * i);
+                })(currPos[0] + unit[0] * (i+1), currPos[1] + unit[1] * (i+1));
             }
         };
 
@@ -42,22 +43,23 @@
             var angle = i * Math.PI / 3,
                 x = Math.sin(angle) * radius,
                 y = -Math.cos(angle) * radius;
-            (function(x, y, c, i, currPos) {
+            (function(x, y, i, currPos) {
                 var action = function() {
                     if(i === 7) {
                         afterDrawing();
                     } else {
-                        c.lineTo(x, y);
-                        c.stroke();
-                        //interpolate(currPos, [x,y], 10, 10000);
+                        context.lineTo(x, y);
+                        context.stroke();
+                        //interpolate(currPos, [x,y], 10, 1000);
                     }
+                    return true;
                 };
                 if(i === 1) {
                     action();
                 } else {
-                    setTimeout(action, 1000 * (i-1));
+                    d3.timer(action, 1000 * (i-1));
                 }
-            })(x, y, context, i, currPos);
+            })(x, y, i, currPos);
             currPos = [x, y];
         }
 
