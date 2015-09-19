@@ -137,3 +137,6 @@ body {
   width: 500px;
   height: 500px;
 }
+.canvas {
+  transition: all 1s ease;
+}
