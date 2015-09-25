@@ -5,6 +5,7 @@
     var imageHeight = 343;
     var radius = imageHeight / 2;
     var duration = 1000;
+    var numSteps = 10;
 
     var cell = d3.select(".project");
 
@@ -28,6 +29,8 @@
         context.lineWidth = 1;
         context.strokeStyle = 'white';
         var currPos = [0, -radius];
+        var qExt = queue(1);
+        var qInt = queue(1);
 
         /**
          * Performs linear interpolation between 2 points A and B.
@@ -35,50 +38,56 @@
          * @param B coordinates of arrival point
          * @param steps number of intermediate steps
          * @param time total time
+         * @param action the action to be performed, it has to provide the needed params (x, y, i, B, steps)
+         * @param callback to be called when finished
          */
-        var interpolate = function(A, B, steps, time) {
-            var unit = [Math.abs(B[0] - A[0]) / steps, Math.abs(B[1] - A[1]) / steps];
-            var xSign = B[0] > A [0] ? +1 : -1;
-            var ySign = B[1] > A [1] ? +1 : -1;
+        var interpolate = function(A, B, steps, time, action, callback) {
+            var unit = [(B[0] - A[0]) / steps, (B[1] - A[1]) / steps];
             for(var i=0; i<steps; i++) {
-                (function(x, y, i) {
-                    var action = function() {
-                        if(i === steps -1) {
-                            // Round the coords for last point
-                            context.lineTo(B[0], B[1]);
-                        } else {
-                            context.lineTo(x, y);
-                        }
-                        context.stroke();
+                var task = function(x, y, i, callbackInt) {
+                    var callback = function() {
+                        action({x:x, y:y, i:i, B:B, steps:steps}, callbackInt);
                         return true;
                     };
-                    d3.timer(action, (time / steps) * i);
-                })(A[0] + unit[0] * xSign * (i+1), A[1] + unit[1] * ySign * (i+1), i);
+                    d3.timer(callback, time / steps);
+                };
+                qInt.defer(task, A[0] + unit[0] * (i+1), A[1] + unit[1] * (i+1), i);
             }
+            qInt.awaitAll(callback);
         };
 
         var durationEdge = duration / 6;
+        var vertices = [];
         for (var i = 1; i <= 7; i++) {
             var angle = i * Math.PI / 3,
                 x = Math.sin(angle) * radius,
                 y = -Math.cos(angle) * radius;
-            (function(x, y, i, currPos) {
-                var action = function() {
-                    if(i === 7) {
-                        afterDrawing();
-                    } else {
-                        interpolate(currPos, [x,y], 10, durationEdge);
-                    }
-                    return true;
-                };
-                if(i === 1) {
-                    action();
-                } else {
-                    d3.timer(action, durationEdge * (i-1));
-                }
-            })(x, y, i, currPos);
-            currPos = [x, y];
+            vertices.push({x: x, y: y});
         }
+
+        vertices.forEach(function(v, i) {
+            var task = function(callback) {
+                var okCallback = function() {
+                    callback(null, 'finished');
+                };
+                if(i !== 6) {
+                    interpolate(currPos, [v.x, v.y], numSteps, durationEdge, function (params, callbackInt) {
+                        if (params.i === params.steps - 1) {
+                            // Round the coords for last point
+                            context.lineTo(params.B[0], params.B[1]);
+                            currPos = [params.x, params.y];
+                        } else {
+                            context.lineTo(params.x, params.y);
+                        }
+                        context.stroke();
+                        callbackInt(null, 'finished');
+                    }, okCallback);
+                } else {
+                    //afterDrawing();
+                }
+            };
+            qExt.defer(task);
+        });
 
         var afterDrawing = function() {
             context.clip();
